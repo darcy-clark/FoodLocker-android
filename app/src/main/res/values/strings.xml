@@ -2,5 +2,11 @@
     <string name="app_name">FoodLocker</string>
     <string name="logo_desc">The FoodLocker logo</string>
     <string name="welcome_msg">Welcome to FoodLocker! We are a free food delivery service that works
-        inside your high school. To get started, please select your highschool</string>
+        inside your high school. To get started, please select your high school</string>
+    <string name="next_nav">Next</string>
+
+    <string-array name="highschool_list">
+        <item>Lisgar Collegiate Institute</item>
+        <item>Unknown</item>
+    </string-array>
 </resources>

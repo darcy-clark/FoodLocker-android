@@ -22,7 +22,30 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:gravity="center"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
         android:text="@string/welcome_msg"/>
+
+    <Spinner
+        android:id="@+id/hs_choices"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/highschool_list"
+        android:layout_below="@+id/welcome_msg"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:id="@+id/to_signin_btn"
+        android:visibility="invisible"
+        android:background="@android:color/holo_orange_dark"
+        android:textColor="@android:color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="27dp"
+        android:layout_below="@id/hs_choices"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/next_nav"/>
 
 </RelativeLayout>
