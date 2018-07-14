@@ -1,0 +1,1 @@
+This repository contains the source code for the Android version of the FoodLocker mobile app.
