@@ -39,7 +39,7 @@
     <Button
         android:id="@+id/to_signin_btn"
         android:visibility="invisible"
-        android:background="@android:color/holo_orange_dark"
+        android:background="@drawable/foodlocker_button"
         android:textColor="@android:color/white"
         android:layout_width="wrap_content"
         android:layout_height="27dp"
