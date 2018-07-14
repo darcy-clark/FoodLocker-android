@@ -5,6 +5,12 @@
         inside your high school. To get started, please select your high school</string>
     <string name="next_nav">Next</string>
 
+    <string name="login_msg">Please enter your username and password</string>
+    <string name="username_hint">username</string>
+    <string name="password_hint">password</string>
+    <string name="login_nav">Login</string>
+    <string name="no_account_msg">Don\'t have an account already? Sign up here</string>
+
     <string-array name="highschool_list">
         <item>Lisgar Collegiate Institute</item>
         <item>Unknown</item>
