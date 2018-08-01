@@ -8,10 +8,17 @@ import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginPage extends Activity {
 
@@ -29,6 +36,20 @@ public class LoginPage extends Activity {
         SpannableString noActMsg = new SpannableString(noActMsgView.getText());
         noActMsg.setSpan(new NoAccountClickableSpan(this), 31, 38, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
         noActMsgView.setText(noActMsg);
+
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref = db.getReference("lockers/b128/combo");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("DB", "onDataChange: " + dataSnapshot.getValue());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     class NoAccountClickableSpan extends ClickableSpan {

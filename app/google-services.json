@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "36309018592",
+    "firebase_url": "https://foodlocker-162223.firebaseio.com",
+    "project_id": "foodlocker-162223",
+    "storage_bucket": "foodlocker-162223.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36309018592:android:062db272da452f01",
+        "android_client_info": {
+          "package_name": "ca.lisgar.foodlocker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "36309018592-smg52n6qug11klvp0sc48vj3is2qvvis.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9-8J4wyekERIEhMsIft03EGSuMlOXWmg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36309018592:android:b178fe0c650aa8d3",
+        "android_client_info": {
+          "package_name": "org.foodlocker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "36309018592-5pgf97bgc6kcdhi9c35ih0vislkq9nt1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.foodlocker",
+            "certificate_hash": "cc30ce4b66f31b3600fb6d6273274aa78691e82e"
+          }
+        },
+        {
+          "client_id": "36309018592-smg52n6qug11klvp0sc48vj3is2qvvis.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9-8J4wyekERIEhMsIft03EGSuMlOXWmg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "36309018592-smg52n6qug11klvp0sc48vj3is2qvvis.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
