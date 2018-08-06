@@ -99,4 +99,14 @@
         android:textColor="@android:color/white"
         android:text="@string/create_act_btn"/>
 
+    <TextView
+        android:id="@+id/create_act_err_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/create_act_btn"
+        android:gravity="center"
+        android:textSize="17sp"
+        android:textColor="@android:color/holo_red_dark"/>
+
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package org.foodlocker;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,11 +9,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.foodlocker.structs.User;
 import org.foodlocker.utils.FirebaseUtil;
 
 public class CreateAccount extends Activity {
+
+    private TextView errorMsgTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +24,8 @@ public class CreateAccount extends Activity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_create_account);
+
+        errorMsgTv = findViewById(R.id.create_act_err_msg);
 
         Button userBtn = findViewById(R.id.user_btn);
         Button volunteerBtn = findViewById(R.id.volunteer_btn);
@@ -31,11 +37,11 @@ public class CreateAccount extends Activity {
     }
 
     public void onAccountCreation() {
-        Log.d("Create Account", "We've reached the callback!");
+        startActivity(new Intent(this, WelcomePage.class));
     }
 
     public void onDuplicateUsername() {
-        Log.d("Create Account", "Duplicate account detected!");
+        errorMsgTv.setText(getString(R.string.create_act_duplicate_err));
     }
 
     class UserTypeButtonListener implements View.OnClickListener {
@@ -81,29 +87,30 @@ public class CreateAccount extends Activity {
 
         private boolean checkUserInfo(String username, String password) {
             if (!userBtn.isSelected() && !volunteerBtn.isSelected()) {
-                Log.d("AccountCreate", "Specify role");
+                errorMsgTv.setText(getText(R.string.create_act_no_role));
                 return false;
             }
 
             if (username.isEmpty()) {
-                Log.d("AccountCreate", "Specify username");
+                errorMsgTv.setText(getText(R.string.create_act_no_user));
                 return false;
             }
 
             if (password.isEmpty()) {
-                Log.d("AccountCreate", "Specify password");
+                errorMsgTv.setText(getText(R.string.create_act_no_pass));
                 return false;
             }
 
             if (!password.equals(confirmPassIn.getText().toString())) {
-                Log.d("AccountCreate", "Confirmed password does not match");
+                errorMsgTv.setText(getText(R.string.create_act_no_match));
                 return false;
             }
             return true;
         }
 
         private void sendNewUser(User newUser) {
-            FirebaseUtil.createUser(newUser, CreateAccount.this);
+            FirebaseUtil firebaseUtil = new FirebaseUtil();
+            firebaseUtil.createUser(newUser, CreateAccount.this);
         }
     }
 }
