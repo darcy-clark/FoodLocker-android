@@ -1,9 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".WelcomePage">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:textSize="22sp"
+        android:textColor="@color/button_orange"
+        android:text="@string/welcome"/>
+
+    <TextView
+        android:id="@+id/welcome_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/welcome"
+        android:gravity="center"
+        android:textSize="17sp"
+        android:text="@string/welcome_desc"/>
+
+    <TextView
+        android:id="@+id/welcome_faq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/welcome_desc"
+        android:gravity="center"
+        android:textSize="17sp"
+        android:text="@string/welcome_faq"/>
+
+    <Button
+        android:id="@+id/order_now_btn"
+        android:background="@drawable/foodlocker_button"
+        android:textColor="@android:color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="27dp"
+        android:layout_below="@id/welcome_faq"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/order_now_btn"/>
+
+</RelativeLayout>

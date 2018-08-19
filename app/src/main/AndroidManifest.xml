@@ -20,7 +20,10 @@
         </activity>
         <activity android:name=".LoginPage" />
         <activity android:name=".CreateAccount" />
-        <activity android:name=".WelcomePage"></activity>
+        <activity android:name=".WelcomePage" />
+        <activity android:name=".FaqPage" />
+        <activity android:name=".OrderFirstPage" />
+        <activity android:name=".OrderSecondPage"></activity>
     </application>
 
 </manifest>

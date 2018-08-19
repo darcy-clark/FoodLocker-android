@@ -11,11 +11,15 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.foodlocker.CreateAccount;
 import org.foodlocker.LoginPage;
+import org.foodlocker.OrderFirstPage;
+import org.foodlocker.structs.Box;
 import org.foodlocker.structs.User;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FirebaseUtil {
 
@@ -68,6 +72,27 @@ public class FirebaseUtil {
         } else {
             loginPageActivity.onBadLogin();
         }
+    }
+
+    public void retrieveBoxes(final OrderFirstPage orderFirstPage) {
+        DatabaseReference boxesRef = db.getReference("boxes");
+        boxesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> snapshots = dataSnapshot.getChildren();
+                List<Box> boxes = new ArrayList<>();
+                for(DataSnapshot snap : snapshots) {
+                    Box box = snap.getValue(Box.class);
+                    boxes.add(box);
+                }
+                orderFirstPage.populateBoxList(boxes);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     class UserExistsChecker implements ValueEventListener {

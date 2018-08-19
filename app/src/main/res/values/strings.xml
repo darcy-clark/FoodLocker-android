@@ -27,6 +27,11 @@
     <string name="login_no_entry">Please enter both your username and password</string>
     <string name="login_no_match">The entered credentials are incorrect</string>
 
+    <string name="welcome">Welcome to food locker!</string>
+    <string name="welcome_desc">A description</string>
+    <string name="welcome_faq">Have any questions? Check out our FAQ</string>
+    <string name="order_now_btn">Order Now</string>
+
     <string-array name="highschool_list">
         <item>Lisgar Collegiate Institute</item>
         <item>Unknown</item>
