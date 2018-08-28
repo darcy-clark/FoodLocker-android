@@ -35,6 +35,11 @@ public class WelcomePage extends Activity {
         orderNowBtn.setOnClickListener(new OrderNowButtonClick());
     }
 
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
     class FaqClickableSpan extends ClickableSpan {
 
         @Override

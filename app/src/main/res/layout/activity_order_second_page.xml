@@ -1,9 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".OrderSecondPage">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/second_box_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:textSize="22sp"
+        android:textColor="@color/button_orange"/>
+
+    <TextView
+        android:id="@+id/second_box_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/second_box_title"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/second_box_items"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/second_box_desc"
+        android:layout_marginTop="10dp"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/second_box_pickup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/second_box_items"
+        android:layout_marginTop="10dp"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/second_diet_rest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/second_box_pickup"
+        android:layout_marginTop="10dp"
+        android:text="@string/diet_rest_title"
+        android:textSize="20sp"/>
+
+    <CheckBox
+        android:id="@+id/vege_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/second_diet_rest"
+        android:text="@string/vegetarian"
+        android:textSize="20sp"/>
+    <CheckBox
+        android:id="@+id/vegan_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/vege_check"
+        android:text="@string/vegan"
+        android:textSize="20sp"/>
+    <CheckBox
+        android:id="@+id/dairy_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/vegan_check"
+        android:text="@string/dairy"
+        android:textSize="20sp"/>
+    <CheckBox
+        android:id="@+id/gluten_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dairy_check"
+        android:text="@string/gluten"
+        android:textSize="20sp"/>
+
+    <Button
+        android:id="@+id/second_order_now_btn"
+        android:background="@drawable/foodlocker_button"
+        android:textColor="@android:color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="27dp"
+        android:layout_below="@id/gluten_check"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/confirm_order"/>
+
+    <TextView
+        android:id="@+id/no_stock_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/second_order_now_btn"
+        android:gravity="center"
+        android:textSize="17sp"
+        android:textColor="@android:color/holo_red_dark"/>
+
+</RelativeLayout>

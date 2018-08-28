@@ -32,6 +32,14 @@
     <string name="welcome_faq">Have any questions? Check out our FAQ</string>
     <string name="order_now_btn">Order Now</string>
 
+    <string name="diet_rest_title">Dietary Restrictions:</string>
+    <string name="vegetarian">Vegetarian</string>
+    <string name="vegan">Vegan</string>
+    <string name="dairy">Dairy Free</string>
+    <string name="gluten">Gluten Free</string>
+    <string name="confirm_order">Confirm Order</string>
+    <string name="no_stock_msg">This box is currently out of stock</string>
+
     <string-array name="highschool_list">
         <item>Lisgar Collegiate Institute</item>
         <item>Unknown</item>

@@ -23,7 +23,13 @@
         <activity android:name=".WelcomePage" />
         <activity android:name=".FaqPage" />
         <activity android:name=".OrderFirstPage" />
-        <activity android:name=".OrderSecondPage"></activity>
+        <activity android:name=".OrderSecondPage" />
+        <activity android:name=".OrderInformation" />
+
+        <service
+            android:name=".NotificationService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
