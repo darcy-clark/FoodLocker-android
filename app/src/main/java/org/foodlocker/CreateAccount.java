@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.foodlocker.structs.User;
+import org.foodlocker.utils.DeviceDataUtil;
 import org.foodlocker.utils.FirebaseUtil;
 
 public class CreateAccount extends Activity {
@@ -36,7 +37,8 @@ public class CreateAccount extends Activity {
         createActBtn.setOnClickListener(new CreateActButtonListener(userBtn, volunteerBtn));
     }
 
-    public void onAccountCreation() {
+    public void onAccountCreation(String username) {
+        DeviceDataUtil.registerAccount(getApplicationContext(), username);
         startActivity(new Intent(this, WelcomePage.class));
     }
 
@@ -67,6 +69,7 @@ public class CreateAccount extends Activity {
         private EditText usernameIn = findViewById(R.id.new_username_in);
         private EditText passwordIn = findViewById(R.id.new_password_in);
         private EditText confirmPassIn = findViewById(R.id.confirm_pass_in);
+        private String actType;
 
         CreateActButtonListener(Button userBtn, Button volunteerBtn) {
             this.userBtn = userBtn;
@@ -77,6 +80,11 @@ public class CreateAccount extends Activity {
         public void onClick(View view) {
             String username = usernameIn.getText().toString();
             String password = passwordIn.getText().toString();
+            if (userBtn.isSelected()) {
+                actType = "user";
+            } else if (volunteerBtn.isSelected()) {
+                actType = "volunteer";
+            }
             if(!checkUserInfo(username, password)) {
                 return;
             }
@@ -86,7 +94,7 @@ public class CreateAccount extends Activity {
         }
 
         private boolean checkUserInfo(String username, String password) {
-            if (!userBtn.isSelected() && !volunteerBtn.isSelected()) {
+            if (actType == null) {
                 errorMsgTv.setText(getText(R.string.create_act_no_role));
                 return false;
             }
@@ -110,7 +118,7 @@ public class CreateAccount extends Activity {
 
         private void sendNewUser(User newUser) {
             FirebaseUtil firebaseUtil = new FirebaseUtil();
-            firebaseUtil.createUser(newUser, CreateAccount.this);
+            firebaseUtil.createUser(newUser, CreateAccount.this, actType);
         }
     }
 }

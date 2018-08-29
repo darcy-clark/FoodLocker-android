@@ -1,13 +1,17 @@
 package org.foodlocker.utils;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.foodlocker.CreateAccount;
 import org.foodlocker.LoginPage;
@@ -25,14 +29,16 @@ public class FirebaseUtil {
 
     static private FirebaseDatabase db = FirebaseDatabase.getInstance();
 
-    public void createUser(User newUser, CreateAccount createAccountActivity) {
+    public void createUser(User newUser, CreateAccount createAccountActivity, String actType) {
         DatabaseReference userChildRef = db.getReference("users").child(newUser.getUsername());
 
-        UserExistsChecker listener = new UserExistsChecker(newUser, userChildRef, createAccountActivity, "create");
+        UserExistsChecker listener = new UserExistsChecker(newUser, createAccountActivity,
+                userChildRef, actType);
         userChildRef.addListenerForSingleValueEvent(listener);
     }
 
-    private void createUserCont(User newUser, DatabaseReference userChildRef, CreateAccount createAccountActivity) {
+    private void createUserCont(User newUser, DatabaseReference userChildRef,
+                                CreateAccount createAccountActivity, String actType) {
         MessageDigest md;
         try {
             md = MessageDigest.getInstance("SHA-256");
@@ -45,13 +51,27 @@ public class FirebaseUtil {
         newUser.setPasshash(hashedPass);
 
         userChildRef.setValue(newUser);
-        createAccountActivity.onAccountCreation();
+        addActToTopic(actType);
+        createAccountActivity.onAccountCreation(newUser.getUsername());
+    }
+
+    private void addActToTopic(final String actType) {
+        FirebaseMessaging.getInstance().subscribeToTopic(actType)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (!task.isSuccessful()) {
+                    throw new RuntimeException("Failed to subscribe to topic \"" + actType + "\"");
+                }
+                Log.d("Subscribe", "Successful " + actType);
+            }
+        });
     }
 
     public void login(User user, LoginPage loginPageActivity) {
         DatabaseReference userChildRef = db.getReference("users").child(user.getUsername());
 
-        UserExistsChecker listener = new UserExistsChecker(user, loginPageActivity, "login");
+        UserExistsChecker listener = new UserExistsChecker(user, loginPageActivity);
         userChildRef.addListenerForSingleValueEvent(listener);
     }
 
@@ -68,7 +88,7 @@ public class FirebaseUtil {
         String hashedPass = String.format( "%064x", new BigInteger( 1, bytes ) );
 
         if (hashedPass.equals(snapshot.child("passhash").getValue(String.class))) {
-            loginPageActivity.onLogin();
+            loginPageActivity.onLogin(user.getUsername());
         } else {
             loginPageActivity.onBadLogin();
         }
@@ -78,7 +98,7 @@ public class FirebaseUtil {
         DatabaseReference boxesRef = db.getReference("boxes");
         boxesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> snapshots = dataSnapshot.getChildren();
                 List<Box> boxes = new ArrayList<>();
                 for(DataSnapshot snap : snapshots) {
@@ -89,7 +109,7 @@ public class FirebaseUtil {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
@@ -98,33 +118,43 @@ public class FirebaseUtil {
     class UserExistsChecker implements ValueEventListener {
 
         private User user;
-        private String accessType;
         private Activity caller;
-        // This is only needed for account creation
+        // These are only needed for account creation
         private DatabaseReference userChildRef;
+        private String actType;
 
-        UserExistsChecker(User user, LoginPage caller, String accessType) {
-            this.user = user;
-            this.accessType = accessType;
-            this.caller = caller;
+        /**
+         * Constructor used for account login
+         * @param user {@link User} object containing username and password
+         * @param caller the caller {@link Activity} which contains the callback
+         */
+        UserExistsChecker(User user, Activity caller) {
+            this(user, caller, null, null);
         }
 
-        UserExistsChecker(User user, DatabaseReference userChildRef, CreateAccount caller,
-                          String accessType) {
+        /**
+         * Constructor used for account creation
+         * @param user {@link User} object containing username and password
+         * @param caller the caller {@link Activity} which contains the callback
+         * @param userChildRef DB space to create the new user in
+         * @param actType {@link String} representing whether the new account is a user or volunteer
+         */
+        UserExistsChecker(User user, Activity caller, DatabaseReference userChildRef, String actType) {
             this.user = user;
             this.userChildRef = userChildRef;
             this.caller = caller;
-            this.accessType = accessType;
+            this.actType = actType;
         }
 
         @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             boolean exists = dataSnapshot.exists();
-            if (!exists && accessType.equals("create")) {
-                createUserCont(user, userChildRef, (CreateAccount) caller);
-            } else if (exists && accessType.equals("create")) {
+            // TODO: Simplify
+            if (!exists && actType != null) {
+                createUserCont(user, userChildRef, (CreateAccount) caller, actType);
+            } else if (exists && actType != null) {
                 ((CreateAccount) caller).onDuplicateUsername();
-            } else if (!exists && accessType.equals("login")) {
+            } else if (!exists) {
                 ((LoginPage) caller).onBadLogin();
             } else {
                 loginCont(user, dataSnapshot, (LoginPage) caller);
@@ -132,7 +162,7 @@ public class FirebaseUtil {
         }
 
         @Override
-        public void onCancelled(DatabaseError databaseError) {
+        public void onCancelled(@NonNull DatabaseError databaseError) {
 
         }
     }

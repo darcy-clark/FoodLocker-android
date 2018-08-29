@@ -60,6 +60,8 @@ public class OrderSecondPage extends Activity {
         @Override
         public void onClick(View view) {
             Log.d("Confirm click", "We got a confirm click");
+            NotificationService s = new NotificationService();
+
         }
     }
 }

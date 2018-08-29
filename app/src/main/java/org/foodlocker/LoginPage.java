@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.foodlocker.structs.User;
+import org.foodlocker.utils.DeviceDataUtil;
 import org.foodlocker.utils.FirebaseUtil;
 
 public class LoginPage extends Activity {
@@ -54,7 +55,8 @@ public class LoginPage extends Activity {
         loginBtn.setOnClickListener(new LoginButtonListener());
     }
 
-    public void onLogin() {
+    public void onLogin(String username) {
+        DeviceDataUtil.registerAccount(getApplicationContext(), username);
         startActivity(new Intent(this, WelcomePage.class));
     }
 
