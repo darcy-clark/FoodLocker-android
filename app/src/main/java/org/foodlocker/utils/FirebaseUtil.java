@@ -11,6 +11,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.foodlocker.CreateAccount;
@@ -19,6 +20,7 @@ import org.foodlocker.OrderFirstPage;
 import org.foodlocker.structs.Box;
 import org.foodlocker.structs.User;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -88,6 +90,7 @@ public class FirebaseUtil {
         String hashedPass = String.format( "%064x", new BigInteger( 1, bytes ) );
 
         if (hashedPass.equals(snapshot.child("passhash").getValue(String.class))) {
+            addActToTopic(snapshot.child("type").getValue(String.class));
             loginPageActivity.onLogin(user.getUsername());
         } else {
             loginPageActivity.onBadLogin();
@@ -113,6 +116,14 @@ public class FirebaseUtil {
 
             }
         });
+    }
+
+    public void unsubscribe() {
+        try {
+            FirebaseInstanceId.getInstance().deleteInstanceId();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     class UserExistsChecker implements ValueEventListener {

@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.foodlocker.utils.FirebaseUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +27,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        // Checks if user is already logged in; if so, go straight to Welcome Page, bypass login/account create
         String user = getApplicationContext().getSharedPreferences("userDetails", Context.MODE_PRIVATE).getString("account", null);
         if (user != null) {
             startActivity(new Intent(this, WelcomePage.class));

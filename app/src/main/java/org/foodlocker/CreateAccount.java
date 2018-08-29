@@ -89,7 +89,7 @@ public class CreateAccount extends Activity {
                 return;
             }
 
-            sendNewUser(new User(username, password));
+            sendNewUser(new User(username, password, actType));
             Log.d("AccountCreate", "Gucci Gang");
         }
 
