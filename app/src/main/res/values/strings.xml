@@ -40,6 +40,21 @@
     <string name="confirm_order">Confirm Order</string>
     <string name="no_stock_msg">This box is currently out of stock</string>
 
+    <string name="order_info_header">Here is the information on your order:</string>
+    <string name="order_info_box">Box: %s</string>
+    <string name="order_info_locker_num">Locker number: %s</string>
+    <string name="order_info_combo">Lock combo: %s</string>
+    <string name="order_info_diet">Dietary restrictions: %s</string>
+    <string name="order_info_plastic_bag">Your food comes in a reusable bag! If you\'ll use it again, feel free to keep it. Otherwise return it to the locker when you are done</string>
+    <string name="order_info_thanks">Thank you for your order. We will get back to you shortly with a time to pick up your food box</string>
+
+    <string name="volun_welcome_desc">Welcome! As a Food Locker volunteer, you have two main roles:</string>
+    <string name="edit_inv_btn">Edit inventory</string>
+    <string name="check_orders_btn">Check orders</string>
+    <string name="volun_welcome_desc_cont">You can also do other things like:</string>
+    <string name="volun_hours_btn">View volunteer hours</string>
+    <string name="edit_combo_btn">Edit lock combos</string>
+
     <string-array name="highschool_list">
         <item>Lisgar Collegiate Institute</item>
         <item>Unknown</item>

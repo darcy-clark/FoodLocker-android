@@ -55,9 +55,13 @@ public class LoginPage extends Activity {
         loginBtn.setOnClickListener(new LoginButtonListener());
     }
 
-    public void onLogin(String username) {
-        DeviceDataUtil.registerAccount(getApplicationContext(), username);
-        startActivity(new Intent(this, WelcomePage.class));
+    public void onLogin(String username, String actType) {
+        DeviceDataUtil.registerAccount(getApplicationContext(), username, actType);
+        if (actType.equals("user")) {
+            startActivity(new Intent(this, WelcomePage.class));
+        } else if(actType.equals("volunteer")) {
+            startActivity(new Intent(this, VolunteerWelcomePage.class));
+        }
     }
 
     public void onBadLogin() {

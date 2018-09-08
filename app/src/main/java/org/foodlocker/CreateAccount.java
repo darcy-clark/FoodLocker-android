@@ -37,8 +37,8 @@ public class CreateAccount extends Activity {
         createActBtn.setOnClickListener(new CreateActButtonListener(userBtn, volunteerBtn));
     }
 
-    public void onAccountCreation(String username) {
-        DeviceDataUtil.registerAccount(getApplicationContext(), username);
+    public void onAccountCreation(String username, String actType) {
+        DeviceDataUtil.registerAccount(getApplicationContext(), username, actType);
         startActivity(new Intent(this, WelcomePage.class));
     }
 

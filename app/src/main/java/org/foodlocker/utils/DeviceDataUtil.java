@@ -2,39 +2,28 @@ package org.foodlocker.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
-
-import org.foodlocker.structs.User;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class DeviceDataUtil {
 
-    public static void registerAccount(Context context, String user) {
-//        String accountFileStr = "accountInfo.txt";
-//        String msg = "1";
-//        File accountFile = new File(context.getFilesDir(), accountFileStr);
-//
-//        try {
-//            if (!accountFile.exists()) {
-//                accountFile.createNewFile();
-//            }
-//            FileOutputStream fileOutputStream = context.openFileOutput(accountFileStr, Context.MODE_PRIVATE);
-//            fileOutputStream.write(msg.getBytes());
-//            fileOutputStream.close();
-//        } catch (FileNotFoundException e) {
-//            throw new RuntimeException(e);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+    /**
+     * Saves the account to SharedPreferences, letting the app know in future that it's logged in,
+     * and the user it's logged in to.
+     * @param context {@link Context} of the {@link android.app.Activity} user is registering/signing
+     *                               up from
+     * @param user the username of the new login/sign up
+     */
+    public static void registerAccount(Context context, String user, String type) {
         SharedPreferences userPreferences = context.getSharedPreferences("userDetails", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = userPreferences.edit();
-        editor.putString("account", user);
+        editor.putString(type, user);
         editor.apply();
+    }
+
+    public static String retrieveCurrentUser(Context context) {
+        return context.getSharedPreferences("userDetails", Context.MODE_PRIVATE).getString("user", null);
+    }
+
+    public static String retrieveCurrentVolunteer(Context context) {
+        return context.getSharedPreferences("userDetails", Context.MODE_PRIVATE).getString("volunteer", null);
     }
 }

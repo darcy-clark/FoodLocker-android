@@ -1,31 +1,50 @@
 package org.foodlocker.utils;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.bluetooth.BluetoothClass;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 
 import org.foodlocker.CreateAccount;
 import org.foodlocker.LoginPage;
 import org.foodlocker.OrderFirstPage;
+import org.foodlocker.OrderSecondPage;
 import org.foodlocker.structs.Box;
+import org.foodlocker.structs.Order;
 import org.foodlocker.structs.User;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 public class FirebaseUtil {
 
@@ -54,7 +73,7 @@ public class FirebaseUtil {
 
         userChildRef.setValue(newUser);
         addActToTopic(actType);
-        createAccountActivity.onAccountCreation(newUser.getUsername());
+        createAccountActivity.onAccountCreation(newUser.getUsername(), actType);
     }
 
     private void addActToTopic(final String actType) {
@@ -70,31 +89,38 @@ public class FirebaseUtil {
         });
     }
 
-    public void login(User user, LoginPage loginPageActivity) {
-        DatabaseReference userChildRef = db.getReference("users").child(user.getUsername());
-
-        UserExistsChecker listener = new UserExistsChecker(user, loginPageActivity);
-        userChildRef.addListenerForSingleValueEvent(listener);
+    public void login(User user, final LoginPage loginPageActivity) {
+        user.setPasshash(HashingUtil.sha256(user.getPasshash()));
+        Map<String, String> userMap = new HashMap<>();
+        userMap.put("username", user.getUsername());
+        userMap.put("passhash", user.getPasshash());
+        FirebaseFunctions.getInstance()
+                .getHttpsCallable("login")
+                .call(userMap)
+                .addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
+                    @Override
+                    public void onSuccess(HttpsCallableResult result) {
+                        Map<String, String> data = (Map) result.getData();
+                        Log.d("CloudFunction", data.toString());
+                        getFirebaseAuth(data, loginPageActivity);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        loginPageActivity.onBadLogin();
+                    }
+                });
     }
 
-    private void loginCont(User user, DataSnapshot snapshot, LoginPage loginPageActivity) {
-        // TODO: Extract hasher into method
-        MessageDigest md;
-        try {
-            md = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e) {
-            return;
-        }
-        md.update(user.getPasshash().getBytes());
-        byte[] bytes = md.digest();
-        String hashedPass = String.format( "%064x", new BigInteger( 1, bytes ) );
-
-        if (hashedPass.equals(snapshot.child("passhash").getValue(String.class))) {
-            addActToTopic(snapshot.child("type").getValue(String.class));
-            loginPageActivity.onLogin(user.getUsername());
-        } else {
-            loginPageActivity.onBadLogin();
-        }
+    private void getFirebaseAuth(final Map<String, String> data, final LoginPage loginPageActivity) {
+        FirebaseAuth.getInstance().signInWithCustomToken(data.get("token"))
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        loginPageActivity.onLogin(data.get("username"), data.get("type"));
+                    }
+                });
     }
 
     public void retrieveBoxes(final OrderFirstPage orderFirstPage) {
@@ -109,6 +135,45 @@ public class FirebaseUtil {
                     boxes.add(box);
                 }
                 orderFirstPage.populateBoxList(boxes);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void createOrder(String box, List<String> dietRestrictions, OrderSecondPage caller) {
+        pickLocker(box, dietRestrictions, caller);
+    }
+
+    private void createOrderCont(String box, String lockerNum, String lockerCombo,
+                                 List<String> dietRestrictions, OrderSecondPage caller) {
+        String user = DeviceDataUtil.retrieveCurrentUser(caller.getApplicationContext());
+        long timestamp = new Date().getTime();
+        Order order = new Order(box, lockerNum, lockerCombo, user, timestamp, dietRestrictions);
+
+        String orderName = UUID.randomUUID().toString();
+        DatabaseReference newOrderRef = db.getReference("orders").child(orderName);
+        newOrderRef.setValue(order);
+
+        caller.onOrderComplete(order);
+    }
+
+    private void pickLocker(final String box, final List<String> dietRestrictions, final OrderSecondPage caller) {
+        final DatabaseReference lockerRef = db.getReference("lockers");
+        Query freeLockersQuery = lockerRef.orderByChild("avail").equalTo(true);
+        freeLockersQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // TODO: no available lockers CANNOT crash app
+                Iterable<DataSnapshot> snapshots = dataSnapshot.getChildren();
+                DataSnapshot lockerSnap = snapshots.iterator().next();
+                String lockerNumber = lockerSnap.getKey();
+                lockerRef.child(lockerNumber).child("avail").setValue(false);
+                String lockerCombo = lockerSnap.child("combo").getValue(String.class);
+                createOrderCont(box, lockerNumber, lockerCombo, dietRestrictions, caller);
             }
 
             @Override
@@ -160,15 +225,10 @@ public class FirebaseUtil {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             boolean exists = dataSnapshot.exists();
-            // TODO: Simplify
-            if (!exists && actType != null) {
+            if (!exists) {
                 createUserCont(user, userChildRef, (CreateAccount) caller, actType);
-            } else if (exists && actType != null) {
-                ((CreateAccount) caller).onDuplicateUsername();
-            } else if (!exists) {
-                ((LoginPage) caller).onBadLogin();
             } else {
-                loginCont(user, dataSnapshot, (LoginPage) caller);
+                ((CreateAccount) caller).onDuplicateUsername();
             }
         }
 

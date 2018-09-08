@@ -26,12 +26,13 @@
         <activity android:name=".OrderSecondPage" />
         <activity android:name=".OrderInformation" />
 
-        <service
-            android:name=".NotificationService">
+        <service android:name=".NotificationService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <activity android:name=".VolunteerWelcomePage"></activity>
     </application>
 
 </manifest>

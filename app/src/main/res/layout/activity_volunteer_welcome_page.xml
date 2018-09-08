@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".VolunteerWelcomePage">
+
+    <TextView
+        android:id="@+id/volunteer_welcome_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:textSize="17sp"
+        android:text="@string/volun_welcome_desc"/>
+
+    <RelativeLayout
+        android:id="@+id/volun_btn_wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/volunteer_welcome_desc"
+        android:layout_marginTop="10dp">
+
+        <Button
+            android:id="@+id/edit_inv_btn"
+            android:background="@drawable/foodlocker_button"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:textColor="@android:color/white"
+            android:text="@string/edit_inv_btn"/>
+        <Button
+            android:id="@+id/check_orders_btn"
+            android:background="@drawable/foodlocker_button"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_toEndOf="@id/edit_inv_btn"
+            android:layout_toRightOf="@id/edit_inv_btn"
+            android:textColor="@android:color/white"
+            android:text="@string/check_orders_btn"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/volunteer_welcome_desc_cont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/volun_btn_wrapper"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:textSize="17sp"
+        android:text="@string/volun_welcome_desc_cont"/>
+
+    <Button
+        android:id="@+id/volunteer_hours_btn"
+        android:background="@drawable/foodlocker_button"
+        android:layout_width="185dp"
+        android:layout_height="27dp"
+        android:layout_below="@id/volunteer_welcome_desc_cont"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/white"
+        android:text="@string/volun_hours_btn"/>
+
+    <Button
+        android:id="@+id/edit_combo_btn"
+        android:background="@drawable/foodlocker_button"
+        android:layout_width="185dp"
+        android:layout_height="27dp"
+        android:layout_below="@id/volunteer_hours_btn"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/white"
+        android:text="@string/edit_combo_btn"/>
+
+</RelativeLayout>
