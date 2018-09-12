@@ -55,6 +55,11 @@
     <string name="volun_hours_btn">View volunteer hours</string>
     <string name="edit_combo_btn">Edit lock combos</string>
 
+    <string name="order_list_time">%d min ago</string>
+    <string name="order_list_accept">Accept Order</string>
+
+    <string name="loading">Loading...</string>
+
     <string-array name="highschool_list">
         <item>Lisgar Collegiate Institute</item>
         <item>Unknown</item>

@@ -25,7 +25,7 @@ public class BoxListAdapter extends ArrayAdapter {
 
     @Override
     @NonNull
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(R.layout.box_list_item, parent, false);
         TextView title = row.findViewById(R.id.box_title);

@@ -32,7 +32,8 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".VolunteerWelcomePage"></activity>
+        <activity android:name=".VolunteerWelcomePage" />
+        <activity android:name=".OrdersListPage"></activity>
     </application>
 
 </manifest>

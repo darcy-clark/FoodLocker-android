@@ -88,7 +88,6 @@ public class OrderSecondPage extends Activity {
 
         @Override
         public void onClick(View view) {
-            Log.d("Confirm click", "We got a confirm click");
 
             // This can be done better. Refactor later if time permits
             List<String> dietRestrictions = new ArrayList<>();

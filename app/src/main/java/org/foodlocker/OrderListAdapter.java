@@ -1,0 +1,70 @@
+package org.foodlocker;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.daimajia.swipe.SwipeLayout;
+import com.daimajia.swipe.adapters.ArraySwipeAdapter;
+
+import org.foodlocker.structs.Order;
+
+import java.util.Date;
+import java.util.List;
+
+public class OrderListAdapter extends ArraySwipeAdapter {
+
+    private Context context;
+    private List<Order> orders;
+
+    public OrderListAdapter(Context context, List<Order> orders) {
+        super(context, R.layout.order_list_item, orders);
+        this.context = context;
+        this.orders = orders;
+    }
+
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View row = inflater.inflate(R.layout.order_list_item, parent, false);
+
+        addSwipe(row);
+
+        TextView boxNameTv = row.findViewById(R.id.box_name);
+        TextView userTv = row.findViewById(R.id.user);
+        TextView orderTimeTv = row.findViewById(R.id.order_time);
+
+        Order order = orders.get(position);
+
+        boxNameTv.setText(order.getBox());
+        userTv.setText(order.getUser());
+        long currentTime = new Date().getTime();
+        int timeInMinutes = (int) ((currentTime - order.getTimestamp()) / 60000);
+        orderTimeTv.setText(context.getString(R.string.order_list_time, timeInMinutes));
+
+        RelativeLayout aboveLayout = row.findViewById(R.id.info_swipe_above);
+        if (order.getStatus().equals("accepted")) {
+            aboveLayout.setBackgroundColor(row.getResources().getColor(R.color.accepted_green));
+        }
+
+        return row;
+    }
+
+    private void addSwipe(View row) {
+        SwipeLayout swipeLayout = row.findViewById(R.id.order_list_swipe);
+        swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+    }
+
+    @Override
+    public int getSwipeLayoutResourceId(int position) {
+        return R.id.order_list_swipe;
+    }
+}

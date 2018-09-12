@@ -19,10 +19,20 @@ public class DeviceDataUtil {
         editor.apply();
     }
 
+    /**
+     * Retrieves the current user's username from {@link SharedPreferences} if logged in
+     * @param context {@link Context} of caller's {@link android.app.Activity}
+     * @return username {@link String}
+     */
     public static String retrieveCurrentUser(Context context) {
         return context.getSharedPreferences("userDetails", Context.MODE_PRIVATE).getString("user", null);
     }
 
+    /**
+     * Retrieves the current volunteer's username from {@link SharedPreferences} if logged in
+     * @param context context {@link Context} of caller's {@link android.app.Activity}
+     * @return username {@link String}
+     */
     public static String retrieveCurrentVolunteer(Context context) {
         return context.getSharedPreferences("userDetails", Context.MODE_PRIVATE).getString("volunteer", null);
     }

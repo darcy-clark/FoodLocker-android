@@ -27,8 +27,10 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import org.foodlocker.CreateAccount;
 import org.foodlocker.LoginPage;
+import org.foodlocker.NotificationService;
 import org.foodlocker.OrderFirstPage;
 import org.foodlocker.OrderSecondPage;
+import org.foodlocker.OrdersListPage;
 import org.foodlocker.structs.Box;
 import org.foodlocker.structs.Order;
 import org.foodlocker.structs.User;
@@ -50,6 +52,7 @@ public class FirebaseUtil {
 
     static private FirebaseDatabase db = FirebaseDatabase.getInstance();
 
+    // TODO: This is getting moved to a Firebase HTTPS Function
     public void createUser(User newUser, CreateAccount createAccountActivity, String actType) {
         DatabaseReference userChildRef = db.getReference("users").child(newUser.getUsername());
 
@@ -89,11 +92,19 @@ public class FirebaseUtil {
         });
     }
 
+    /**
+     * Calls a Firebase Function that checks user credentials against the database. Retrieves a
+     * Firebase token if login is good, otherwise reports bad credentials to the user.
+     *
+     * @param user the account credentials
+     * @param loginPageActivity the {@link Activity} with the login callbacks
+     */
     public void login(User user, final LoginPage loginPageActivity) {
         user.setPasshash(HashingUtil.sha256(user.getPasshash()));
         Map<String, String> userMap = new HashMap<>();
         userMap.put("username", user.getUsername());
         userMap.put("passhash", user.getPasshash());
+        userMap.put("messagingToken", NotificationService.messagingToken());
         FirebaseFunctions.getInstance()
                 .getHttpsCallable("login")
                 .call(userMap)
@@ -135,6 +146,39 @@ public class FirebaseUtil {
                     boxes.add(box);
                 }
                 orderFirstPage.populateBoxList(boxes);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void retrieveOrders(final OrdersListPage ordersListPage) {
+        DatabaseReference ordersRef = db.getReference("orders");
+        ordersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String currentVolunteer = DeviceDataUtil.retrieveCurrentVolunteer(ordersListPage);
+                Iterable<DataSnapshot> snapshots = dataSnapshot.getChildren();
+                List<Order> openOrders = new ArrayList<>();
+                List<Order> acceptedOrders = new ArrayList<>();
+                for(DataSnapshot snap : snapshots) {
+                    Order order = snap.getValue(Order.class);
+                    if (order == null || order.getStatus() == null) {
+                        continue;
+                    }
+                    if (order.getStatus().equals("open")) {
+                        openOrders.add(order);
+                    } else if (order.getVolunteer().equals(currentVolunteer) && order.getStatus().equals("accepted")) {
+                        acceptedOrders.add(order);
+                    }
+                }
+                List<Order> allOrders = new ArrayList<>(acceptedOrders);
+                allOrders.addAll(openOrders);
+
+                ordersListPage.populateOrderList(allOrders);
             }
 
             @Override
@@ -191,6 +235,8 @@ public class FirebaseUtil {
         }
     }
 
+    // TODO: This should all be moved to a Firebase Function, the app should not have write privs
+    // TODO: before it's logged in
     class UserExistsChecker implements ValueEventListener {
 
         private User user;
@@ -198,15 +244,6 @@ public class FirebaseUtil {
         // These are only needed for account creation
         private DatabaseReference userChildRef;
         private String actType;
-
-        /**
-         * Constructor used for account login
-         * @param user {@link User} object containing username and password
-         * @param caller the caller {@link Activity} which contains the callback
-         */
-        UserExistsChecker(User user, Activity caller) {
-            this(user, caller, null, null);
-        }
 
         /**
          * Constructor used for account creation

@@ -1,5 +1,7 @@
 package org.foodlocker.structs;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -9,8 +11,14 @@ public class Order implements Serializable {
     private String lockerNumber;
     private String lockerCombo;
     private String user;
+    private String status;
+    private String volunteer;
     private long timestamp;
     private List<String> dietRestrictions;
+
+    public Order() {
+
+    }
 
     public Order(String box, String lockerNumber, String lockerCombo, String user, long timestamp,
                  List<String> dietRestrictions) {
@@ -52,6 +60,22 @@ public class Order implements Serializable {
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getVolunteer() {
+        return volunteer;
+    }
+
+    public void setVolunteer(String volunteer) {
+        this.volunteer = volunteer;
     }
 
     public long getTimestamp() {

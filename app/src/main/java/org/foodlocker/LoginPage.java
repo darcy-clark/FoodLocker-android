@@ -65,6 +65,7 @@ public class LoginPage extends Activity {
     }
 
     public void onBadLogin() {
+        loginErrMsgTv.setTextColor(getResources().getColor(R.color.error_red));
         loginErrMsgTv.setText(getText(R.string.login_no_match));
     }
 
@@ -95,11 +96,14 @@ public class LoginPage extends Activity {
             String username = userIn.getText().toString();
             String password = passIn.getText().toString();
             if (username.isEmpty() || password.isEmpty()) {
+                loginErrMsgTv.setTextColor(getResources().getColor(R.color.error_red));
                 loginErrMsgTv.setText(getText(R.string.login_no_entry));
                 return;
             }
 
             User user = new User(username, password);
+            loginErrMsgTv.setTextColor(getResources().getColor(android.R.color.black));
+            loginErrMsgTv.setText(getString(R.string.loading));
             FirebaseUtil firebaseUtil = new FirebaseUtil();
             firebaseUtil.login(user, LoginPage.this);
         }

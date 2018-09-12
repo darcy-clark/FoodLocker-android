@@ -7,4 +7,9 @@
     <color name="button_orange">#FF8800</color>
     <color name="dark_button_orange">#E65C00</color>
     <color name="button_grey">#D3D3D3</color>
+
+    <color name="accepted_green">#42f445</color>
+    <color name="open_off_white">#FFFFF2</color>
+
+    <color name="error_red">@android:color/holo_red_dark</color>
 </resources>
