@@ -1,9 +1,6 @@
 package org.foodlocker.utils;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.bluetooth.BluetoothClass;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -23,7 +20,6 @@ import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 
 import org.foodlocker.CreateAccount;
 import org.foodlocker.LoginPage;
@@ -33,8 +29,8 @@ import org.foodlocker.OrderSecondPage;
 import org.foodlocker.OrdersListPage;
 import org.foodlocker.structs.Box;
 import org.foodlocker.structs.Order;
+import org.foodlocker.structs.OrderStatus;
 import org.foodlocker.structs.User;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -45,7 +41,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 public class FirebaseUtil {
@@ -112,7 +107,7 @@ public class FirebaseUtil {
                     @Override
                     public void onSuccess(HttpsCallableResult result) {
                         Map<String, String> data = (Map) result.getData();
-                        Log.d("CloudFunction", data.toString());
+                        addActToTopic(data.get("type"));
                         getFirebaseAuth(data, loginPageActivity);
                     }
                 })
@@ -134,6 +129,11 @@ public class FirebaseUtil {
                 });
     }
 
+    /**
+     * Retrieves from the database possible boxes the user can order, passing them to the callback
+     * on completion.
+     * @param orderFirstPage the {@link OrderFirstPage} activity that is calling the function
+     */
     public void retrieveBoxes(final OrderFirstPage orderFirstPage) {
         DatabaseReference boxesRef = db.getReference("boxes");
         boxesRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -169,9 +169,9 @@ public class FirebaseUtil {
                     if (order == null || order.getStatus() == null) {
                         continue;
                     }
-                    if (order.getStatus().equals("open")) {
+                    if (order.getStatus() == OrderStatus.OPEN) {
                         openOrders.add(order);
-                    } else if (order.getVolunteer().equals(currentVolunteer) && order.getStatus().equals("accepted")) {
+                    } else if (order.getVolunteer().equals(currentVolunteer) && order.getStatus() == OrderStatus.ACCEPTED) {
                         acceptedOrders.add(order);
                     }
                 }
@@ -199,10 +199,23 @@ public class FirebaseUtil {
         Order order = new Order(box, lockerNum, lockerCombo, user, timestamp, dietRestrictions);
 
         String orderName = UUID.randomUUID().toString();
+        order.setUuid(orderName);
+        order.setStatus(OrderStatus.OPEN);
         DatabaseReference newOrderRef = db.getReference("orders").child(orderName);
         newOrderRef.setValue(order);
 
         caller.onOrderComplete(order);
+    }
+
+    public void acceptOrder(Order order, OrdersListPage ordersListPage) {
+        DatabaseReference orderRef = db.getReference("orders").child(order.getUuid());
+        orderRef.setValue(order);
+        ordersListPage.onAccept(order);
+    }
+
+    public void setDeliveryTime(Order order) {
+        DatabaseReference orderRef = db.getReference("orders").child(order.getUuid());
+        orderRef.setValue(order);
     }
 
     private void pickLocker(final String box, final List<String> dietRestrictions, final OrderSecondPage caller) {

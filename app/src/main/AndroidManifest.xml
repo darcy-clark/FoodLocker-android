@@ -33,7 +33,10 @@
         </service>
 
         <activity android:name=".VolunteerWelcomePage" />
-        <activity android:name=".OrdersListPage"></activity>
+        <activity
+            android:name=".OrdersListPage"
+            android:noHistory="true"/>
+        <activity android:name=".DeliveryTimeSetPage" />
     </application>
 
 </manifest>

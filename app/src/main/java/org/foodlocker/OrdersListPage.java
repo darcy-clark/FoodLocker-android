@@ -1,6 +1,7 @@
 package org.foodlocker;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -33,5 +34,13 @@ public class OrdersListPage extends Activity {
     public void populateOrderList(List<Order> orders) {
         OrderListAdapter orderListAdapter = new OrderListAdapter(this, orders);
         orderList.setAdapter(orderListAdapter);
+    }
+
+    public void onAccept(Order order) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("order", order);
+        Intent intent = new Intent(this, DeliveryTimeSetPage.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }
